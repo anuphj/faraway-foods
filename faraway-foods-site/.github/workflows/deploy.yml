@@ -1,0 +1,49 @@
+name: deploy
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  STACK: faraway-foods-site
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/setup-sam@v2
+
+      - name: Build and deploy stack
+        run: |
+          sam build
+          sam deploy \
+            --stack-name "$STACK" \
+            --resolve-s3 \
+            --capabilities CAPABILITY_IAM \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides \
+              HostedZoneId="${{ vars.HOSTED_ZONE_ID }}" \
+              AlertEmail="${{ vars.ALERT_EMAIL }}"
+
+      - name: Publish site
+        run: |
+          out() { aws cloudformation describe-stacks --stack-name "$STACK" \
+            --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
+          BUCKET=$(out SiteBucketName)
+          URL=$(out FunctionUrl)
+          sed "s#var ENDPOINT = \"\";#var ENDPOINT = \"${URL}\";#" site/index.html > /tmp/index.html
+          aws s3 cp /tmp/index.html "s3://${BUCKET}/index.html" \
+            --content-type "text/html; charset=utf-8" --cache-control "max-age=300"
