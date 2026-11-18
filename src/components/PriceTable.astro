@@ -1,0 +1,10 @@
+---
+const { items } = Astro.props;
+const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
+---
+<div class="tablewrap"><table>
+  <thead><tr><th>Item</th><th class="n">Early pre-order</th><th class="n">Pre-order</th><th class="n">Ready stock</th></tr></thead>
+  <tbody>
+    {items.map((i) => <tr><td>{i.name}<br /><span class="muted">{i.size}</span></td><td class="n"><strong>{inr(i.tier1)}</strong></td><td class="n">{inr(i.tier2)}</td><td class="n">{inr(i.ready)}</td></tr>)}
+  </tbody>
+</table></div>

@@ -1,0 +1,30 @@
+---
+const { source = "site" } = Astro.props;
+---
+<form class="wl" id="wl" data-source={source}>
+  <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" aria-label="Email address" />
+  <button class="btn" type="submit">Notify me</button>
+  <label class="consent"><input type="checkbox" name="consent" required /> I agree to receive updates about drops from Faraway Foods. I can opt out at any time.</label>
+</form>
+<div class="msg" id="wl-msg" role="status"></div>
+<script>
+  const ENDPOINT = import.meta.env.PUBLIC_WAITLIST_URL ?? "";
+  const f = document.getElementById("wl") as HTMLFormElement | null;
+  const msg = document.getElementById("wl-msg")!;
+  f?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const d = new FormData(f);
+    if (d.get("website")) return;
+    if (!ENDPOINT) { msg.textContent = "Sign-ups open shortly. Please email us in the meantime."; return; }
+    const b = f.querySelector("button")!;
+    b.disabled = true; msg.textContent = "Saving…";
+    try {
+      const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: d.get("email"), consent: true, source: f.dataset.source }) });
+      if (!r.ok) throw new Error();
+      msg.textContent = "Thank you! We’ll be in touch."; f.reset();
+    } catch { msg.textContent = "Something went wrong. Please try again."; }
+    b.disabled = false;
+  });
+</script>

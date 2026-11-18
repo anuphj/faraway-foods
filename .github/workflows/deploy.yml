@@ -47,12 +47,20 @@ jobs:
               BlockSearchIndexing="$NOINDEX" \
               AlertEmail="${{ vars.ALERT_EMAIL }}"
 
-      - name: Publish site
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Build and publish site
         run: |
           out() { aws cloudformation describe-stacks --stack-name "$STACK" \
             --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
           BUCKET=$(out SiteBucketName)
-          URL=$(out FunctionUrl)
-          sed "s#var ENDPOINT = \"\";#var ENDPOINT = \"${URL}\";#" site/index.html > /tmp/index.html
-          aws s3 cp /tmp/index.html "s3://${BUCKET}/index.html" \
-            --content-type "text/html; charset=utf-8" --cache-control "max-age=300"
+          export PUBLIC_WAITLIST_URL=$(out FunctionUrl)
+          npm ci
+          npm run build
+          aws s3 sync dist/ "s3://${BUCKET}/" --delete --exclude "_astro/*" \
+            --cache-control "public,max-age=300"
+          aws s3 sync dist/_astro/ "s3://${BUCKET}/_astro/" --delete \
+            --cache-control "public,max-age=31536000,immutable"

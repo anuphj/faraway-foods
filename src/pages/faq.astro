@@ -1,0 +1,9 @@
+---
+import Base from "../layouts/Base.astro";
+import { faqs } from "../data/faqs";
+---
+<Base title="FAQ">
+  <h1>Questions</h1>
+  {faqs.map(([q, a]) => <details><summary>{q}</summary><p>{a}</p></details>)}
+  <p style="margin-top:28px">Something else? <a href="/contact/">Get in touch</a>.</p>
+</Base>

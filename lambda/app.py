@@ -10,10 +10,18 @@ def handler(event, context):
         body = event.get("body") or "{}"
         if event.get("isBase64Encoded"):
             body = base64.b64decode(body).decode("utf-8")
-        email = str(json.loads(body).get("email", "")).strip().lower()
+        data = json.loads(body)
+        email = str(data.get("email", "")).strip().lower()
         if len(email) > 254 or not EMAIL_RE.fullmatch(email):
             return {"statusCode": 400, "body": "invalid"}
-        table.put_item(Item={"email": email, "ts": int(time.time())})
+        if data.get("consent") is not True:
+            return {"statusCode": 400, "body": "consent required"}
+        table.put_item(Item={
+            "email": email,
+            "ts": int(time.time()),
+            "consent": True,  # opted in to updates, recorded with time and source
+            "source": str(data.get("source", "site"))[:40],
+        })
         return {"statusCode": 200, "body": "ok"}
     except Exception:
         return {"statusCode": 500, "body": "error"}

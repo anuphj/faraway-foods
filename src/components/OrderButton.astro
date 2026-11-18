@@ -1,0 +1,8 @@
+---
+import { site } from "../data/site";
+const { open = true } = Astro.props;
+const ready = open && site.orderFormUrl;
+---
+{ready
+  ? <a class="btn" href={site.orderFormUrl} rel="noopener">Pre-order this drop</a>
+  : <a class="btn" href="#join" aria-disabled="true">Pre-orders open soon</a>}

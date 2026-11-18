@@ -1,0 +1,10 @@
+export const faqs = [
+  ["What is a pantry drop?", "A limited batch from one country, bought in one consolidated shipment. You pre-order, we import, and we deliver once everything clears customs."],
+  ["Why is pre-ordering cheaper?", "We only import what is ordered, so there is no unsold stock to price in. The earlier you order, the lower the tier. Ready-stock prices after clearance are higher."],
+  ["Do I pay in full upfront?", "You can pay a 30% booking deposit or the full amount. The balance is collected before dispatch."],
+  ["How long does delivery take?", "Plan on three to four weeks from the day pre-orders close. We update you at each stage: shipped, cleared, packed, dispatched."],
+  ["Is everything FSSAI compliant?", "Yes. Products are imported under our FSSAI Central licence, carry the required Indian label, and are vegetarian unless clearly marked."],
+  ["What if my order is delayed or rejected at customs?", "We tell you as soon as we know. If we cannot deliver, you get a full refund. See the refund policy."],
+  ["Where do you deliver?", "Bengaluru and across India. Shipping charges, if any, are shown before you pay."],
+  ["How do I place an order?", "Open the current drop and use its order link. Join the waitlist to hear when it opens."],
+];

@@ -1,0 +1,16 @@
+---
+import Base from "../../layouts/Base.astro";
+import { drops, statusLabel, currentDrop } from "../../data/drops";
+const cur = currentDrop();
+---
+<Base title="Pantry drops">
+  <h1>Pantry drops</h1>
+  {cur && <>
+    <h2>Current: Drop {cur.number}, {cur.title}</h2>
+    <p><strong>{statusLabel[cur.status]}.</strong> {cur.blurb} <a href={`/drops/${cur.slug}/`}>Details</a></p>
+  </>}
+  <h2>All drops</h2>
+  <table><tbody>
+    {[...drops].reverse().map((d) => <tr><td><a href={`/drops/${d.slug}/`}>Drop {d.number}</a></td><td>{d.title}</td><td class="n">{statusLabel[d.status]}</td></tr>)}
+  </tbody></table>
+</Base>
