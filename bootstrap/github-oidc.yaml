@@ -5,6 +5,10 @@ Parameters:
   GitHubRepo:
     Type: String
     Description: owner/repo, e.g. yourname/faraway-foods-site
+  Branch:
+    Type: String
+    Default: main
+    Description: Git branch allowed to deploy (main for prod, dev for the dev account).
   CreateOidcProvider:
     Type: String
     Default: "true"
@@ -42,7 +46,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubRepo}:ref:refs/heads/main"
+                token.actions.githubusercontent.com:sub: !Sub "repo:${GitHubRepo}:ref:refs/heads/${Branch}"
 
 Outputs:
   DeployRoleArn:
