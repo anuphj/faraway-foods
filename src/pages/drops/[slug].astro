@@ -2,24 +2,30 @@
 import Base from "../../layouts/Base.astro";
 import PriceTable from "../../components/PriceTable.astro";
 import OrderButton from "../../components/OrderButton.astro";
-import Waitlist from "../../components/Waitlist.astro";
-import { drops, statusLabel } from "../../data/drops";
+import Tracker from "../../components/Tracker.astro";
+import Timeline from "../../components/Timeline.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import WaitlistBand from "../../components/WaitlistBand.astro";
+import { drops } from "../../data/drops";
 export function getStaticPaths() {
   return drops.map((d) => ({ params: { slug: d.slug }, props: { d } }));
 }
 const { d } = Astro.props;
 ---
-<Base title={`Drop ${d.number}: ${d.title}`} description={d.blurb}>
+<Base title={`Drop ${d.number}: ${d.title}`} description={d.blurb} wide>
   <h1>Drop {d.number}: {d.title}</h1>
-  <p class="lead">{statusLabel[d.status]}. {d.blurb}</p>
+  <p class="lead">{d.blurb}</p>
+  {d.stage !== null && <Tracker drop={d} />}
   {d.items.length > 0 && <>
-    <h2>What’s in it</h2>
+    <div class="grid">{d.items.map((i) => <ProductCard item={i} />)}</div>
+    <h2>Pricing tiers</h2>
     <PriceTable items={d.items} />
     <p><OrderButton open={d.status === "open"} /></p>
   </>}
-  {d.timeline.length > 0 && <>
-    <h2>Where it is</h2>
-    <ol class="timeline">{d.timeline.map((s) => <li class={s.done ? "done" : ""}>{s.label}{s.done ? " (done)" : ""}</li>)}</ol>
+  {d.stage !== null && <>
+    <h2>Where this drop is</h2>
+    <Timeline drop={d} />
   </>}
-  {d.items.length === 0 && <div class="panel"><h2>Where should we go next?</h2><p class="muted">Join the list and tell us the country or product you want.</p><Waitlist source={`drop-${d.slug}`} /></div>}
+  {d.items.length === 0 && <p><a class="btn" href="/#join">Tell us where to go next</a></p>}
+  <WaitlistBand slot="band" />
 </Base>

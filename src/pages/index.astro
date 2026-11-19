@@ -1,25 +1,23 @@
 ---
 import Base from "../layouts/Base.astro";
-import Waitlist from "../components/Waitlist.astro";
-import PriceTable from "../components/PriceTable.astro";
 import OrderButton from "../components/OrderButton.astro";
-import { currentDrop, statusLabel } from "../data/drops";
+import Tracker from "../components/Tracker.astro";
+import ProductCard from "../components/ProductCard.astro";
+import WaitlistBand from "../components/WaitlistBand.astro";
+import { currentDrop } from "../data/drops";
 const drop = currentDrop();
 ---
-<Base>
-  <h1>Pantry staples from the source, delivered to your table.</h1>
-  <p class="lead">Authentic matcha, soy sauce, mochi and more. Not the lookalikes. We import one country at a time, in limited drops, and you pre-order at lower prices before the shipment lands.</p>
-
-  {drop && <>
+<Base wide>
+  <section class="hero">
+    <h1>Real pantry staples, straight from the source.</h1>
+    <p class="lead">One country at a time, in limited drops. Pre-order early and pay less.</p>
+    <div class="actions"><OrderButton open={drop?.status === "open"} /><a class="link" href="/how-it-works/">How drops work</a></div>
+  </section>
+  {drop && <section class="drop">
     <h2>Drop {drop.number}: {drop.title}</h2>
-    <p><strong>{statusLabel[drop.status]}.</strong> {drop.blurb}</p>
-    <PriceTable items={drop.items} />
-    <p><OrderButton open={drop.status === "open"} /> <a href={`/drops/${drop.slug}/`}>See the full drop</a></p>
-  </>}
-
-  <div class="panel" id="join">
-    <h2>Hear first when a drop opens</h2>
-    <p class="muted">Early pre-order prices are the lowest we offer. Join the list and we’ll email you before pre-orders open.</p>
-    <Waitlist source="home" />
-  </div>
+    {drop.stage !== null && <Tracker drop={drop} />}
+    <div class="grid">{drop.items.map((i) => <ProductCard item={i} />)}</div>
+    <p style="margin-top:28px"><a class="link" href={`/drops/${drop.slug}/`}>See the full drop and pricing tiers</a></p>
+  </section>}
+  <WaitlistBand slot="band" />
 </Base>

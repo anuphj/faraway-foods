@@ -1,8 +1,9 @@
 ---
+import "@fontsource-variable/inter";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-const { title, description = "Authentic, hard-to-find gourmet pantry staples from around the world, delivered across India." } = Astro.props;
+const { title, description = "Authentic, hard-to-find gourmet pantry staples from around the world, delivered across India.", wide = false } = Astro.props;
 const full = title ? `${title} · Faraway Foods` : "Faraway Foods";
 ---
 <!doctype html>
@@ -20,7 +21,8 @@ const full = title ? `${title} · Faraway Foods` : "Faraway Foods";
 </head>
 <body>
   <Header path={Astro.url.pathname} />
-  <main><slot /></main>
+  <main class={wide ? "wrap" : "wrap prose"}><slot /></main>
+  <slot name="band" />
   <Footer />
 </body>
 </html>

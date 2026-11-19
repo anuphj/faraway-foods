@@ -2,11 +2,11 @@
 import { site } from "../data/site";
 import { policies } from "../data/policies";
 ---
-<footer class="site"><div>
-  <p style="margin:0 0 8px">
+<footer class="site"><div class="wrap">
+  <p>
     {policies.map((p, i) => <><a href={`/policies/${p.slug}/`}>{p.title}</a>{i < policies.length - 1 ? " · " : ""}</>)}
   </p>
-  <p style="margin:0">© {site.legalName}, {site.city}.
+  <p>© {site.legalName}, {site.city}.
     {site.fssai ? ` FSSAI Central Licence No. ${site.fssai}.` : ""}
     {" "}<a href={`mailto:${site.email}`}>{site.email}</a>
     {site.instagram ? <> · <a href={site.instagram} rel="noopener">Instagram</a></> : null}

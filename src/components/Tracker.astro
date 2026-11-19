@@ -1,0 +1,28 @@
+---
+import { stagesFor, currentLabel } from "../data/drops";
+const { drop } = Astro.props;
+const stages = stagesFor(drop);
+const stage = drop.stage as number;
+const next = stage < stages.length - 1 ? stages[stage + 1] : null;
+const nextDate = drop.dates?.[stage + 1];
+---
+<div class="tracker">
+  <p class="muted small">Step {stage + 1} of {stages.length}</p>
+  <p class="now">{currentLabel(drop)}</p>
+  <div class="segs">
+    {stages.map((l, i) => (
+      <button type="button" class={i <= stage ? "sg on" : "sg"} data-label={`${i + 1}. ${l}`}
+        aria-label={`Step ${i + 1}: ${l}${i === stage ? " (current)" : ""}`}></button>
+    ))}
+  </div>
+  {next && <p class="muted next">Next: {next}{nextDate ? ` · ${nextDate}` : ""}</p>}
+</div>
+<script>
+  // Tap or click a segment to show its label (hover and keyboard focus are handled in CSS).
+  document.addEventListener("click", (e) => {
+    const b = (e.target as HTMLElement).closest(".sg") as HTMLElement | null;
+    const wasOpen = b?.dataset.open === "1";
+    document.querySelectorAll<HTMLElement>(".sg").forEach((x) => delete x.dataset.open);
+    if (b && !wasOpen) b.dataset.open = "1";
+  });
+</script>
