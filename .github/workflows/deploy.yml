@@ -32,7 +32,23 @@ jobs:
       - uses: aws-actions/setup-sam@v2
 
       - name: Build and deploy stack
+        env:
+          DEV_PASSWORD: ${{ secrets.DEV_SITE_PASSWORD }}
+          AUTH_ENABLED: ${{ vars.DEV_AUTH_ENABLED }}
         run: |
+          # Dev password protection (HTTP Basic Auth) is controlled by the repo variable
+          # DEV_AUTH_ENABLED. Anything other than "false" keeps it ON (fails closed).
+          EXTRA_PARAMS=""
+          if [ "$GITHUB_REF_NAME" != "main" ]; then
+            if [ "$(printf '%s' "$AUTH_ENABLED" | tr '[:upper:]' '[:lower:]')" = "false" ]; then
+              echo "::warning::Dev password protection is OFF (DEV_AUTH_ENABLED=false)"
+            else
+              [ -n "$DEV_PASSWORD" ] || { echo "Secret DEV_SITE_PASSWORD is not set"; exit 1; }
+              AUTH=$(printf '%s' "faraway:${DEV_PASSWORD}" | base64 | tr -d '=\n')
+              echo "::add-mask::$AUTH"
+              EXTRA_PARAMS="BasicAuthToken=$AUTH"
+            fi
+          fi
           sam build
           sam deploy \
             --stack-name "$STACK" \
@@ -45,7 +61,8 @@ jobs:
               HostedZoneId="$ZONE_ID" \
               IncludeWww="$WWW" \
               BlockSearchIndexing="$NOINDEX" \
-              AlertEmail="${{ vars.ALERT_EMAIL }}"
+              AlertEmail="${{ vars.ALERT_EMAIL }}" \
+              ${EXTRA_PARAMS}
 
       - uses: actions/setup-node@v4
         with:
@@ -66,3 +83,16 @@ jobs:
             aws s3 sync dist/_astro/ "s3://${BUCKET}/_astro/" --delete \
               --cache-control "public,max-age=31536000,immutable"
           fi
+
+      - name: Check protection state (dev only)
+        if: github.ref_name != 'main'
+        continue-on-error: true
+        run: |
+          WANT=401
+          [ "$(printf '%s' "${{ vars.DEV_AUTH_ENABLED }}" | tr '[:upper:]' '[:lower:]')" = "false" ] && WANT=200
+          for i in 1 2 3 4 5 6; do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' "https://${DOMAIN}/")
+            [ "$CODE" = "$WANT" ] && { echo "OK: ${DOMAIN} returned ${CODE} as expected"; exit 0; }
+            sleep 10
+          done
+          echo "::warning::${DOMAIN} returned ${CODE}, expected ${WANT}. CloudFront may still be updating."

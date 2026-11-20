@@ -13,6 +13,11 @@ Parameters:
     Type: String
     Default: ""
     Description: Optional. Gets an email if monthly AWS spend passes 80% of USD 5.
+  BasicAuthToken:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: base64 (no padding) of user:password for HTTP Basic Auth. Empty means no protection (prod).
   ReservedConcurrency:
     Type: Number
     Default: 0
@@ -161,9 +166,17 @@ Resources:
       FunctionConfig:
         Comment: Append index.html to folder-style URLs
         Runtime: cloudfront-js-2.0
-      FunctionCode: |
+      FunctionCode: !Sub |
         function handler(event) {
           var r = event.request;
+          var token = '${BasicAuthToken}';
+          if (token) {
+            var a = r.headers.authorization;
+            if (!a || a.value.replace(/=+$/, '') !== 'Basic ' + token) {
+              return { statusCode: 401, statusDescription: 'Unauthorized',
+                headers: { 'www-authenticate': { value: 'Basic realm="Faraway Foods dev", charset="UTF-8"' } } };
+            }
+          }
           var last = r.uri.split('/').pop();
           if (r.uri.endsWith('/')) { r.uri += 'index.html'; }
           else if (last.indexOf('.') === -1) { r.uri += '/index.html'; }
