@@ -73,3 +73,7 @@ form.wl input[type=email]{flex:1 1 220px;padding:14px;border:1px solid var(--lin
 .consent{flex-basis:100%;font-size:14px;line-height:1.5;color:var(--muted)}
 .hp{position:absolute;left:-9999px}
 .msg{min-height:22px;margin-top:10px;font-size:14px;color:var(--muted)}
+.foot-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px}
+footer.site .foot-row p{margin:0}
+footer.site .social{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;color:var(--muted)}
+footer.site .social:hover{color:var(--accent);background:var(--soft)}
