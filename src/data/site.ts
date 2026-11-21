@@ -6,6 +6,6 @@ export const site = {
   email: "hello@farawayfoods.in",
   fssai: "", // e.g. "14-digit FSSAI Central License No."
   whatsapp: "", // digits only with country code, e.g. "919XXXXXXXXX"
-  instagram: "", // full URL
+  instagram: "https://www.instagram.com/farawayfoods.in/", // full URL
   orderFormUrl: "", // Google Form link for the current drop; empty shows "opens soon"
 };
