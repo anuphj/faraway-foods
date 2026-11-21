@@ -1,19 +1,19 @@
 ---
 import { site } from "../data/site";
 import { policies } from "../data/policies";
+const handle = site.instagram ? "@" + site.instagram.split("/").filter(Boolean).pop() : "";
 ---
 <footer class="site"><div class="wrap">
   <p>
     {policies.map((p, i) => <><a href={`/policies/${p.slug}/`}>{p.title}</a>{i < policies.length - 1 ? " · " : ""}</>)}
   </p>
-  <div class="foot-row">
-    <p>© {site.legalName}, {site.city}.{site.fssai ? ` FSSAI Central Licence No. ${site.fssai}.` : ""} <a href={`mailto:${site.email}`}>{site.email}</a></p>
-    {site.instagram && (
-      <a class="social" href={site.instagram} rel="noopener" aria-label="Faraway Foods on Instagram">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
-        </svg>
-      </a>
-    )}
-  </div>
+  <p>© {site.legalName}, {site.city}.{site.fssai ? ` FSSAI Central Licence No. ${site.fssai}.` : ""} <a href={`mailto:${site.email}`}>{site.email}</a></p>
+  {site.instagram && (
+    <a class="social" href={site.instagram} rel="noopener">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" />
+      </svg>
+      <span>Follow us {handle}</span>
+    </a>
+  )}
 </div></footer>
