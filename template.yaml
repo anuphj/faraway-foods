@@ -13,6 +13,11 @@ Parameters:
     Type: String
     Default: ""
     Description: Optional. Gets an email if monthly AWS spend passes 80% of USD 5.
+  BasicAuthToken:
+    Type: String
+    NoEcho: true
+    Default: ""
+    Description: base64 (no padding) of user:password for HTTP Basic Auth. Empty means no protection (prod).
   ReservedConcurrency:
     Type: Number
     Default: 0
@@ -119,6 +124,15 @@ Resources:
         IPV6Enabled: true
         PriceClass: PriceClass_200
         DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /404.html
+            ErrorCachingMinTTL: 10
         Aliases:
           - !Ref DomainName
           - !If [WithWww, !Sub "www.${DomainName}", !Ref AWS::NoValue]
@@ -139,6 +153,35 @@ Resources:
           Compress: true
           CachePolicyId: !Ref CachePolicy
           ResponseHeadersPolicyId: !If [NoIndex, !Ref NoIndexHeaders, !Ref AWS::NoValue]
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt UrlRewriteFunction.FunctionARN
+
+  # S3 has no folder index: map /faq and /faq/ to /faq/index.html
+  UrlRewriteFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "${AWS::StackName}-url-rewrite"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Append index.html to folder-style URLs
+        Runtime: cloudfront-js-2.0
+      FunctionCode: !Sub |
+        function handler(event) {
+          var r = event.request;
+          var token = '${BasicAuthToken}';
+          if (token) {
+            var a = r.headers.authorization;
+            if (!a || a.value.replace(/=+$/, '') !== 'Basic ' + token) {
+              return { statusCode: 401, statusDescription: 'Unauthorized',
+                headers: { 'www-authenticate': { value: 'Basic realm="Faraway Foods dev", charset="UTF-8"' } } };
+            }
+          }
+          var last = r.uri.split('/').pop();
+          if (r.uri.endsWith('/')) { r.uri += 'index.html'; }
+          else if (last.indexOf('.') === -1) { r.uri += '/index.html'; }
+          return r;
+        }
 
   NoIndexHeaders:
     Type: AWS::CloudFront::ResponseHeadersPolicy

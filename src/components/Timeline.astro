@@ -1,0 +1,12 @@
+---
+import { stagesFor, stageNotes } from "../data/drops";
+const { drop } = Astro.props;
+---
+<ol class="tl">
+  {stagesFor(drop).map((l, i) => (
+    <li class={i < drop.stage ? "done" : i === drop.stage ? "on" : ""} aria-current={i === drop.stage ? "step" : undefined}>
+      <strong>{l}</strong>
+      <span>{stageNotes[i]}{drop.dates?.[i] ? ` · ${drop.dates[i]}` : ""}</span>
+    </li>
+  ))}
+</ol>

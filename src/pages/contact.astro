@@ -1,0 +1,11 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../data/site";
+---
+<Base title="Contact">
+  <h1>Contact</h1>
+  <p>Write to <a href={`mailto:${site.email}`}>{site.email}</a>. We reply within two working days.</p>
+  {site.whatsapp && <p><a href={`https://wa.me/${site.whatsapp}`} rel="noopener">Message us on WhatsApp</a></p>}
+  {site.instagram && <p><a href={site.instagram} rel="noopener">Follow us on Instagram</a></p>}
+  <p class="muted">{site.legalName}, {site.city}.{site.fssai ? ` FSSAI Central Licence No. ${site.fssai}.` : ""}</p>
+</Base>

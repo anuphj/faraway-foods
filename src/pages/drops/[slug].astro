@@ -1,0 +1,37 @@
+---
+import Base from "../../layouts/Base.astro";
+import PriceTable from "../../components/PriceTable.astro";
+import OrderButton from "../../components/OrderButton.astro";
+import Tracker from "../../components/Tracker.astro";
+import Timeline from "../../components/Timeline.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import WaitlistBand from "../../components/WaitlistBand.astro";
+import { drops } from "../../data/drops";
+export function getStaticPaths() {
+  return drops.map((d) => ({ params: { slug: d.slug }, props: { d } }));
+}
+const { d } = Astro.props;
+---
+<Base title={`Drop ${d.number}: ${d.title}`} description={d.blurb} wide>
+  <h1>Drop {d.number}: {d.title}</h1>
+  <p class="lead">{d.blurb}</p>
+  {d.stage !== null && <Tracker drop={d} />}
+  {d.items.length > 0 && d.showItems && <>
+    <div class="grid">{d.items.map((i) => <ProductCard item={i} showPrice={d.showPrices} />)}</div>
+    {d.showPrices ? <>
+      <h2>Pricing tiers</h2>
+      <PriceTable items={d.items} />
+    </> : <>
+      <h2>Pricing</h2>
+      <p>We’ll announce prices before pre-orders open. Join the waitlist and you’ll hear first.</p>
+    </>}
+  </>}
+  {d.items.length > 0 && !d.showItems && <p>We’ll announce the lineup and prices before pre-orders open. Join the waitlist and you’ll hear first.</p>}
+  {d.items.length > 0 && <p><OrderButton open={d.status === "open"} /></p>}
+  {d.stage !== null && <>
+    <h2>Where this drop is</h2>
+    <Timeline drop={d} />
+  </>}
+  {d.items.length === 0 && <p><a class="btn" href="/#join">Tell us where to go next</a></p>}
+  <WaitlistBand slot="band" />
+</Base>

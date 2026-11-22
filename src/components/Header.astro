@@ -1,0 +1,11 @@
+---
+const { path } = Astro.props;
+const links = [["/our-story/", "Our story"], ["/how-it-works/", "How it works"], ["/drops/", "Pantry drops"], ["/faq/", "FAQ"], ["/contact/", "Contact"]];
+const here = (h: string) => path.startsWith(h);
+---
+<header class="site"><div class="wrap">
+  <a class="brand" href="/">Faraway Foods</a>
+  <nav aria-label="Main">
+    {links.map(([h, l]) => <a href={h} aria-current={here(h) ? "page" : undefined}>{l}</a>)}
+  </nav>
+</div></header>

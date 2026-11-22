@@ -1,0 +1,7 @@
+---
+import { site } from "../data/site";
+const { open = false } = Astro.props;
+---
+{open && site.orderFormUrl
+  ? <a class="btn" href={site.orderFormUrl} rel="noopener">Pre-order this drop</a>
+  : <a class="btn" href="/#join">Join the waitlist</a>}
