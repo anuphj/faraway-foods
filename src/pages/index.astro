@@ -16,8 +16,10 @@ const drop = currentDrop();
   {drop && <section class="drop">
     <h2>Drop {drop.number}: {drop.title}</h2>
     {drop.stage !== null && <Tracker drop={drop} />}
-    <div class="grid">{drop.items.map((i) => <ProductCard item={i} />)}</div>
-    <p style="margin-top:28px"><a class="link" href={`/drops/${drop.slug}/`}>See the full drop and pricing tiers</a></p>
+    {drop.showItems
+      ? <div class="grid">{drop.items.map((i) => <ProductCard item={i} showPrice={drop.showPrices} />)}</div>
+      : <p class="lead" style="margin-top:28px">{drop.blurb}</p>}
+    <p style="margin-top:28px"><a class="link" href={`/drops/${drop.slug}/`}>{!drop.showItems ? "See the drop details" : drop.showPrices ? "See the full drop and pricing tiers" : "See the full drop"}</a></p>
   </section>}
   <WaitlistBand slot="band" />
 </Base>

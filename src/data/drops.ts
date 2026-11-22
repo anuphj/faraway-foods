@@ -9,6 +9,8 @@ export type Drop = {
   status: "planned" | "upcoming" | "open" | "closed" | "in-transit" | "delivered";
   blurb: string;
   items: Item[];
+  showItems?: boolean; // lineup (names, photos) stays hidden until this is true
+  showPrices?: boolean; // prices stay hidden on the site until this is true
   stage: number | null; // index of the current step (0-5); null = no tracker
   dates?: Record<number, string>; // optional date per step, e.g. { 1: "12 Dec" }
 };
@@ -38,13 +40,15 @@ export const drops: Drop[] = [
     origin: "Japan",
     status: "upcoming",
     blurb:
-      "Our first drop: ceremonial matcha from Uji, barrel-aged soy sauce and vegetarian daifuku mochi, flown in as one consolidated shipment.",
+      "Our first drop: authentic pantry staples from Japan, flown in as one consolidated shipment. We’ll announce the lineup and prices before pre-orders open.",
     items: [
       { name: "Uji ceremonial matcha", size: "50 g tin", tier1: 1699, tier2: 1799, ready: 1899, photo: "matcha.jpg" },
       { name: "Barrel-aged soy sauce", size: "300 ml bottle", tier1: 1499, tier2: 1649, ready: 1799, photo: "soy-sauce.jpg" },
       { name: "Vegetarian daifuku mochi", size: "180 g box", tier1: 799, tier2: 899, ready: 999, photo: "mochi.jpg" },
     ],
     stage: 0,
+    showItems: false,
+    showPrices: false,
   },
   {
     slug: "002",

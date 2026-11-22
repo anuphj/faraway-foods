@@ -1,6 +1,7 @@
 ---
 import { site } from "../data/site";
-import { policies } from "../data/policies";
+import { policies as all } from "../data/policies";
+const policies = all.filter((p) => p.live);
 const handle = site.instagram ? "@" + site.instagram.split("/").filter(Boolean).pop() : "";
 ---
 <footer class="site"><div class="wrap">

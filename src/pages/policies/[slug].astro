@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import { policies } from "../../data/policies";
 export function getStaticPaths() {
-  return policies.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+  return policies.filter((p) => p.live).map((p) => ({ params: { slug: p.slug }, props: { p } }));
 }
 const { p } = Astro.props;
 ---

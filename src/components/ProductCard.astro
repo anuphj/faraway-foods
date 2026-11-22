@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-const { item } = Astro.props;
+const { item, showPrice = true } = Astro.props;
 const imgs = import.meta.glob("/src/assets/products/*.{jpg,jpeg,png,webp}", { eager: true }) as Record<string, { default: ImageMetadata }>;
 const img = item.photo ? imgs[`/src/assets/products/${item.photo}`]?.default : undefined;
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
@@ -10,5 +10,5 @@ const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
     ? <Image src={img} alt={`${item.name}, ${item.size}`} widths={[400, 800]} sizes="(min-width: 760px) 33vw, 100vw" class="ph" />
     : <div class="ph" role="img" aria-label={`Photo of ${item.name} coming soon`}>Photo coming soon</div>}
   <h3>{item.name}</h3>
-  <p>{item.size} · from {inr(item.tier1)}</p>
+  <p>{item.size}{showPrice ? ` · from ${inr(item.tier1)}` : ""}</p>
 </article>
