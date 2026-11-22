@@ -2,7 +2,7 @@
 export const site = {
   name: "Faraway Foods",
   legalName: "Gourmet Food Trader LLP",
-  city: "Bengaluru, India",
+  city: "India",
   email: "hello@farawayfoods.in",
   fssai: "", // e.g. "14-digit FSSAI Central License No."
   whatsapp: "", // digits only with country code, e.g. "919XXXXXXXXX"
