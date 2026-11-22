@@ -20,7 +20,7 @@ export const stagesFor = (d: Drop) => [
   "Pre-orders close",
   `Shipped from ${d.origin}`,
   "Customs and FSSAI clearance",
-  "Packed in Bengaluru",
+  "Repacked and shipped to you",
   "Dispatched to you",
 ];
 export const stageNotes = [

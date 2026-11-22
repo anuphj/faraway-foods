@@ -5,6 +5,6 @@ export const faqs = [
   ["How long does delivery take?", "Plan on three to four weeks from the day pre-orders close. We update you at each stage: shipped, cleared, packed, dispatched."],
   ["Will the products be FSSAI compliant?", "Yes. Everything will be imported under our FSSAI licence and carry the required Indian label. Products are vegetarian unless clearly marked."],
   ["What if my order is delayed or rejected at customs?", "We tell you as soon as we know. If we cannot deliver, you get a full refund."],
-  ["Where do you deliver?", "Bengaluru and across India. Shipping charges, if any, are shown before you pay."],
+  ["Where do you deliver?", "Across India. Shipping charges, if any, are shown before you pay."],
   ["How do I place an order?", "Open the current drop and use its order link. Join the waitlist to hear when it opens."],
 ];
