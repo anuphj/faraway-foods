@@ -3,24 +3,61 @@ import "@fontsource-variable/inter";
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-const { title, description = "Authentic, hard-to-find gourmet pantry staples from around the world, delivered across India.", wide = false } = Astro.props;
+import { seo } from "../data/seo";
+import { site } from "../data/site";
+
+const props = Astro.props;
+const path = Astro.url.pathname;
+const meta = seo[path] ?? {};
+const title = meta.title ?? props.title;
+const description = meta.description ?? props.description ?? "Authentic, hard-to-find gourmet pantry staples from around the world, delivered across India.";
+const wide = props.wide ?? false;
 const full = title ? `${title} · Faraway Foods` : "Faraway Foods";
+const canonical = new URL(path, Astro.site).href;
+const ogImage = new URL("/og-default.png", Astro.site).href;
+const noindex = import.meta.env.PUBLIC_NOINDEX === "true";
+
+const graph = path === "/" ? {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: "Faraway Foods",
+      legalName: site.legalName,
+      url: new URL("/", Astro.site).href,
+      email: site.email,
+      ...(site.instagram ? { sameAs: [site.instagram] } : {}),
+    },
+    { "@type": "WebSite", name: "Faraway Foods", url: new URL("/", Astro.site).href, inLanguage: "en-IN" },
+  ],
+} : null;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{full}</title>
   <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+  <meta name="theme-color" content="#2f6b45" />
+  <meta property="og:site_name" content="Faraway Foods" />
+  <meta property="og:locale" content="en_IN" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content={full} />
   <meta property="og:description" content={description} />
-  <meta property="og:type" content="website" />
-  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Faraway Foods: real pantry staples, straight from the source" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍵</text></svg>" />
+  {graph && <script type="application/ld+json" set:html={JSON.stringify(graph).replace(/</g, "\\u003c")} />}
 </head>
 <body>
-  <Header path={Astro.url.pathname} />
+  <Header path={path} />
   <main class={wide ? "wrap" : "wrap prose"}><slot /></main>
   <slot name="band" />
   <Footer />

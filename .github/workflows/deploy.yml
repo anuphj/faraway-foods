@@ -75,6 +75,7 @@ jobs:
             --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text; }
           BUCKET=$(out SiteBucketName)
           export PUBLIC_WAITLIST_URL=$(out FunctionUrl)
+          export PUBLIC_NOINDEX="$NOINDEX"
           npm ci
           npm run build
           aws s3 sync dist/ "s3://${BUCKET}/" --delete --exclude "_astro/*" \
