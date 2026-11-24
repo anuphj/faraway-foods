@@ -5,7 +5,7 @@ export const policies = [
     "Today we collect only your email address, when you join our waitlist. We also record that you agreed to hear from us, the time, and which page you signed up on.",
     "We use it to tell you when a drop opens and to send updates about Faraway Foods. We write to you only because you opted in, and you can opt out at any time by writing to us.",
     "When pre-orders open we will also collect your name, phone number and delivery address to fulfil orders. We will update this page before we do.",
-    "Sign-ups are stored with Amazon Web Services, which may hold data outside India. We do not sell your data, and we share it only with providers we need to run the service.",
+    "Sign-ups are stored with the cloud provider, which may hold data outside India. We do not sell your data, and we share it only with providers we need to run the service.",
     "To see, correct or delete your data, or to stop emails, write to hello@farawayfoods.in." ] },
   { slug: "terms", title: "Terms of sale", draft: true, live: false, body: [
     "Faraway Foods is operated by Gourmet Food Trader LLP,. Products are sold through time-limited pre-order drops.",
