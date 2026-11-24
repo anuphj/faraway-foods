@@ -2,8 +2,8 @@
 // Pages without an entry fall back to the title/description set on the page itself.
 export const seo: Record<string, { title?: string; description?: string }> = {
   "/": {
-    title: "Authentic pantry staples from the source",
-    description: "Real pantry staples, imported straight from the source and delivered across India. One country at a time, in limited pre-order drops.",
+    title: "Authentic pantry staples from the origin",
+    description: "Real pantry staples, imported straight from the origin and delivered across India. One country at a time, in limited pre-order drops.",
   },
   "/faq/": {
     title: "Frequently asked questions",
